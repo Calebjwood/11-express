@@ -2,7 +2,7 @@ const fb = require('express').Router();
 
 const uuid = require('../helpers/uuid')
 
-const { readFromFile, readAndAppend } = require('../helpers/fsUtils');
+const { readFromFile, readAndAppend, writeToFile } = require('../helpers/fsUtils');
 
 fb.get('/', (req, res) => {
     console.info(`${req.method} request received for notes`);
@@ -13,16 +13,16 @@ fb.get('/', (req, res) => {
 
 fb.post('/', (req, res) => {
     console.info(`${req.method} request received to submit notes`);
+    
+    const {title, text} = req.body;
 
-    const {noteTitle, noteText} = req.body;
-
-    if (noteTitle && noteText){
+    if (title && text){
         const newNotes = {
-            noteTitle,
-            noteText,
-            note_id: uuid(),
+            title,
+            text,
+            id: uuid(),
         }
-
+        console.log(newNotes.id);
         readAndAppend(newNotes, './db/db.json')
 
         const response = {
@@ -35,5 +35,20 @@ fb.post('/', (req, res) => {
         res.json('Error in posting feedback')
     }
 })
+
+// fb.delete('/:id', (req, res) => {
+//     deleteID = req.params.id
+//     readFromFile('./db/db.json')
+//     .then((data) => {
+//         let parseData = JSON.parse(data)
+//         for(i = 0; i < parseData.length; i++){
+//             if(parseData[i].id === deleteID){
+//                 Reflect.deleteProperty(parseData, [i])
+//                 writeToFile('./db/db.json', parseData)   
+//                 console.info('note deleted')
+//             }
+//         }
+//         })
+// })
 
 module.exports = fb
