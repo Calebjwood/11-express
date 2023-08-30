@@ -36,19 +36,15 @@ fb.post('/', (req, res) => {
     }
 })
 
-// fb.delete('/:id', (req, res) => {
-//     deleteID = req.params.id
-//     readFromFile('./db/db.json')
-//     .then((data) => {
-//         let parseData = JSON.parse(data)
-//         for(i = 0; i < parseData.length; i++){
-//             if(parseData[i].id === deleteID){
-//                 Reflect.deleteProperty(parseData, [i])
-//                 writeToFile('./db/db.json', parseData)   
-//                 console.info('note deleted')
-//             }
-//         }
-//         })
-// })
+fb.delete('/:id', (req, res) => {
+    deleteID = req.params.id
+    readFromFile('./db/db.json')
+    .then((data) => {
+            let parseData = JSON.parse(data)
+            let filterData = parseData.filter((note) => note.id !== deleteID)        
+            writeToFile('./db/db.json', filterData) 
+            res.json('note deleted')
+        })
+})
 
 module.exports = fb
